@@ -17,34 +17,17 @@ public class CardDeck {
 		cards = this.generateCards();
 	}
     
+	// 52°³ÀÇ Ä«µå »ý¼º
 	private List<Card> generateCards() {
 	    List<Card> cards = new LinkedList<>();
-	
+	    
 	    for(String pattern : PATTERNS){
 	        for(int i=1; i<=CARD_COUNT; i++) {
-	            String denomination = this.numberToDenomination(i);
-	            Card card = new Card(pattern, denomination);	// new ºü¶ß·Á¼­ Çì¸ÌÀ½
-	            
+	            Card card = new Card(pattern, i);	// new ºü¶ß·Á¼­ Çì¸ÌÀ½
 	            cards.add(card);
 	        }
 	    }
-	
 	    return cards;
-	}
-	
-	private String numberToDenomination(int number){
-	
-	    if(number == 1){
-	        return "A";
-	    }else if(number == 11){
-	        return "J";
-	    }else if(number == 12){
-	        return "Q";
-	    }else if(number == 13){
-	        return "K";
-	    }
-	
-	    return String.valueOf(number);
 	}
 	
 	public Card draw() {
