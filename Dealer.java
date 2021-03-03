@@ -7,8 +7,9 @@ import java.util.List;
 	뽑은 카드를 소유한다.
 	카드를 오픈한다.
 */
-public class Dealer {
+public class Dealer implements Player{
 	private List<Card> cards;
+	private boolean turn;
 	private static final int CAN_RECEIVE_POINT = 16;
 	
 	public Dealer() {
@@ -24,10 +25,6 @@ public class Dealer {
 		}
 	}
 	
-	private boolean isReceiveCard() {
-		return getPointSum() <= CAN_RECEIVE_POINT;
-	}
-	
 	private int getPointSum() {
 		int sum = 0;
 		for(Card card: cards) {
@@ -36,6 +33,13 @@ public class Dealer {
 		return sum;
 	}
 	
+	@Override
+	private boolean isReceiveCard() {
+		return getPointSum() <= CAN_RECEIVE_POINT;
+	}
+	
+	
+	@Override
 	public void showCards() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("현재 보유 카드 목록 \n");
@@ -47,7 +51,27 @@ public class Dealer {
 		System.out.println(sb.toString());
 	}
 	
+	@Override
 	public List<Card> openCards() {
 		return this.cards;
+	}
+	
+	@Override
+	public void turnOff() {
+		this.setTurn(false);
+	}
+	
+	@Override
+	public void turnOn() {
+		this.setTurn(true);
+	}
+	
+	@Override
+	public boolean isTurn() {
+		return this.turn;
+	}
+
+	private void setTurn(boolean turn) {
+		this.turn = turn;
 	}
 }

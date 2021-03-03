@@ -1,5 +1,7 @@
 package BlackJack;
 import java.util.Scanner;
+import java.util.List;
+import java.util.Arrays;
 
 public class Game {
 	// Class instances
@@ -8,58 +10,69 @@ public class Game {
 	public void play() {
 		System.out.println("========= Black jack =========");
 		Scanner sc = new Scanner(System.in);
-		
-		Dealer dealer = new Dealer();
-		Gamer gamer = new Gamer();
 		Rule rule = new Rule();
 		CardDeck cardDeck = new CardDeck();
 		
-        initPhase(cardDeck, gamer, dealer);		
-		playingPhase(sc, cardDeck, gamer, dealer);
+		List<Player> players = Arrays.asList(new Gamer("사용자1"), new Dealer());
+		List<Player> initAfterPlayers = initPhase(cardDeck, players);
+		List<Player> playingAfterPlayers = playingPhase(sc, cardDeck, initAfterPlayers);
+		
+		Player winner = rule.getWinner(playingAfterPlayers);
+		System.out.println("승자는 " + winner.getName());
 	}
 	
 	// Gamer는 CardDeck 내부에서 카드를 어떻게 뽑아주는지 알필요가 없음
 	// cardDeck은 카드를 뽑아주는 것에, Gamer는 CardDeck에게 카드를 받는 것에 충실해야함
-	private void playingPhase(Scanner sc, CardDeck cardDeck, Gamer gamer, Dealer dealer) {
-		String gamerInput, dealerInput;
-		boolean isGamerTurn = false,
-				isDealerTurn = false;
-		
+	private List<Player> playingPhase(Scanner sc, CardDeck cardDeck, List<Player> players) {
+		List<Player> cardReceivedPlayers;
 		while(true) {
-			System.out.println("카드를 뽑겠습니까? 종료를 원하시면 0을 입력하세요.");
-			gamerInput = sc.nextLine();
+			cardReceivedPlayers = receiveCardAllPlayers(sc, cardDeck, players);
 			
-			if("0".equals(gamerInput)) {
-				break;
-			}else{
-				Card card = cardDeck.draw();
-				gamer.receiveCard(card);
+			if(isAllPlayerTurnOff(cardReceivedPlayers)) {
+					break;
 			}
-			
-			System.out.println("카드를 뽑겠습니까? 종료를 원하시면 0을 입력하세요.");
-			dealerInput = sc.nextLine();
-			
-			if("0".equals(dealerInput)) {
-				break;
-			}else{
+		}
+		return cardReceivedPlayers;
+	}
+	
+	
+	// players와 같은 컬렉션 혹은 인스턴스는 java의 특성으로 인해 Call by reference이다.
+	// 따라서 return을 하지않더라도 players는 변경 상태를 유지한다 
+	// 그럼에도 return을 하는 이유는 이 함수의 목적을 명확히 하기 위함이다.
+	private List<Player> receiveCardAllPlayers(Scanner sc, CardDeck cardDeck, List<Player> players) {
+		for(Player player : players) {
+			if(isReceiveCard(sc)) {
 				Card card = cardDeck.draw();
-				dealer.receiveCard(card);
+				player.receiveCard(card);
+				player.turnOn();
+			}else {
+				player.turnOff();
 			}
-			
-			if(isGamerTurn && isDealerTurn) {
-				break;
+		}
+		return players;
+	}
+	
+	private boolean isAllPlayerTurnOff(List<Player> players){
+		for(Player player : players) {
+			if(player.isTurn()) {
+				return false;
 			}
 		}
 	}
 	
-    private void initPhase(CardDeck cardDeck, Gamer gamer, Dealer dealer){
+	private boolean isReceiveCard(Scanner sc) {
+			System.out.println("카드를 뽑겠습니까? 종료를 원하시면 0을 입력하세요.");
+			return !STOP_RECEIVE_CARD.equals(sc.nextLine());	
+	}
+	
+    private List<Player> initPhase(CardDeck cardDeck, List<Player> players){
         System.out.println("처음 2장의 카드를 각자 뽑겠습니다.");
         for(int i=0;i<INIT_RECEIVE_CARD_COUNT;i++) {
-            Card card = cardDeck.draw();
-            gamer.receiveCard(card);
-            
-            Card card2 = cardDeck.draw();
-            dealer.receiveCard(card2);
+        	for(Player player : players) {
+	            Card card = cardDeck.draw();
+	            player.receiveCard(card);
+	        }
         }
+        return players;
     }
 }
