@@ -4,7 +4,7 @@ import java.util.List;
 public interface Player {
 	void receiveCard(Card card);
 	
-	void showCard();
+	void showCards();
 	
 	List<Card> openCards();
 	
@@ -13,26 +13,7 @@ public interface Player {
 	void turnOn();
 	
 	boolean isTurn();
+	
+	String getName();
 }
 
-public class Gamer implements player {
-	@Override
-	public void receiveCard(Card card) {}
-	
-	@Override
-	public void showCards() {}
-	
-	@Override
-	public List<Card> openCards(){}
-}
-
-public class Dealer implements player {
-	@Override
-	public void receiveCard(Card card) {}
-	
-	@Override
-	public void showCards() {}
-	
-	@Override
-	public List<Card> openCards(){}
-}

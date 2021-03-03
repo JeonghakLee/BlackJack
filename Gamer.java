@@ -1,14 +1,15 @@
 package BlackJack;
 import java.util.List;
 import java.util.ArrayList;
-
 	
-public class Gamer implements player {
+public class Gamer implements Player {
 	private List<Card> cards;
 	private boolean turn;
+	private String name;
 	
-	public Gamer() {
+	public Gamer(String name) {
 		cards = new ArrayList<>();
+		this.name = name;
 	}
 	
 	@Override
@@ -52,4 +53,9 @@ public class Gamer implements player {
 	private void setTurn(boolean turn) {
 		this.turn = turn;
 	}
+	
+    @Override
+    public String getName() {
+        return this.name;
+    }
 }
